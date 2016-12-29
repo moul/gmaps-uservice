@@ -61,10 +61,9 @@ func (s *Service) Geocode(ctx context.Context, in *gmapspb.GeocodeRequest) (*gma
 
 	var req googlemap.GeocodingRequest
 	if err = json.Unmarshal(inJson, &req); err != nil {
+		fmt.Println(err.(*json.UnmarshalTypeError).Offset)
 		return nil, err
 	}
-
-	fmt.Println(string(inJson))
 
 	results, err := s.gm.Geocode(ctx, &req)
 	if err != nil {

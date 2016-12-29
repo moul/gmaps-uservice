@@ -37,7 +37,7 @@ message GeocodeRequest {
   map<string, string> components = 2;
   LatLngBounds bounds = 3;
   string region = 4;
-  LatLng lat_lng = 5;
+  LatLng LatLng = 5;
   repeated string result_type = 6;
   repeated string location_type = 7;
   string place_id = 8;
