@@ -1,0 +1,25 @@
+package: github.com/moul/gmaps-uservice
+import:
+- package: github.com/go-kit/kit
+  version: ^0.3.0
+  subpackages:
+  - auth/jwt
+  - endpoint
+  - log
+  - transport/grpc
+  - transport/http
+- package: github.com/gogo/protobuf
+  version: ^0.3.0
+  subpackages:
+  - proto
+- package: github.com/gorilla/handlers
+  version: ^1.1.0
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: google.golang.org/grpc
+  version: ^1.0.5
+- package: github.com/moul/protoc-gen-gotemplate
+  version: ^1.2.0
+  subpackages:
+  - examples/go-kit/templates

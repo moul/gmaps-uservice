@@ -1,0 +1,58 @@
+hash: d6e7bc622a1badb7eee57e80e9e161e4b4ca115170ed7cd0d0df783f1f987c1e
+updated: 2016-12-29T01:00:57.570103239+01:00
+imports:
+- name: github.com/dgrijalva/jwt-go
+  version: 9ed569b5d1ac936e6494082958d63a6aa4fff99a
+- name: github.com/go-kit/kit
+  version: f66b0e13579bfc5a48b9e2a94b1209c107ea1f41
+  subpackages:
+  - auth/jwt
+  - endpoint
+  - log
+  - transport/grpc
+  - transport/http
+- name: github.com/go-logfmt/logfmt
+  version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
+- name: github.com/go-stack/stack
+  version: 100eb0c0a9c5b306ca2fb4f165df21d80ada4b82
+- name: github.com/gogo/protobuf
+  version: 909568be09de550ed094403c2bf8a261b5bb730a
+  subpackages:
+  - proto
+- name: github.com/golang/protobuf
+  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
+  subpackages:
+  - proto
+- name: github.com/gorilla/handlers
+  version: ee54c7b44cab12289237fb8631314790076e728b
+- name: github.com/kr/logfmt
+  version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
+- name: github.com/moul/protoc-gen-gotemplate
+  version: 7e6c4a940120853450f76b7ec69bda0db83fa3ea
+  subpackages:
+  - examples/go-kit/templates
+- name: golang.org/x/net
+  version: 45e771701b814666a7eb299e6c7a57d0b1799e91
+  subpackages:
+  - context
+  - context/ctxhttp
+  - http2
+  - http2/hpack
+  - idna
+  - internal/timeseries
+  - lex/httplex
+  - trace
+- name: google.golang.org/grpc
+  version: 708a7f9f3283aa2d4f6132d287d78683babe55c8
+  subpackages:
+  - codes
+  - credentials
+  - grpclog
+  - internal
+  - metadata
+  - naming
+  - peer
+  - stats
+  - tap
+  - transport
+testImports: []

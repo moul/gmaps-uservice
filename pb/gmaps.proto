@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+package gmaps;
+
+option go_package = "gmapspb";
+
+service GmapsService {
+  rpc Directions(DirectionsRequest) returns (DirectionsResponse) {}
+}
+
+message DirectionsRequest {
+  string origin = 1;
+  string destination = 2;
+  string mode = 3;
+  string departure_time = 4;
+  string arrival_time = 5;
+  repeated string waypoints = 6;
+  bool alternatives = 7;
+  repeated string avoid = 8;
+  string language = 9;
+  string units = 10;
+  string region = 11;
+  repeated string transit_mode = 12; // can be an enum
+  string transit_routing_preference = 13;
+  string traffic_model = 14;
+}
+
+message DirectionsResponse {
+  repeated Route routes = 1;
+  repeated GeocodedWaypoint geocoded_waypoint = 2;
+  string err_msg = 3;
+}
+
+message GeocodedWaypoint {
+  string geocoder_status = 1;
+  bool partial_match = 2;
+  string place_id = 3;
+  repeated string types = 4;
+}
+
+message TransitDetails {
+  TransitStop arrival_stop = 1;
+  TransitStop departure_stop = 2;
+  int64 arrival_time = 3;
+  int64 departure_time = 4;
+  string headsign = 5;
+  int64 headway = 6; // duration in seconds
+  uint32 num_stop = 7;
+  TransitLine line = 8;
+}
+
+message TransitLine {
+  string name = 1;
+  string short_name = 2;
+  string color = 3;
+  repeated TransitAgency agencies = 4;
+  string url = 5;
+  string icon = 6;
+  string text_color = 7;
+  TransitLineVehicle vehicle = 8;
+}
+
+message TransitLineVehicle {
+  string name = 1;
+  string type = 2;
+  string url = 3;
+}
+
+message TransitAgency {
+  string name = 1;
+  string url = 2;
+  string phone = 3;
+}
+
+message TransitStop {
+  LatLng location = 1;
+  string name = 2;
+}
+
+message Route {
+  string summary = 1;
+  repeated Leg legs = 2;
+  repeated int32 waipoint_order = 3;
+  Polyline overview_polyline = 4;
+  LatLngBounds bounds = 5;
+  string copyrights = 6;
+  repeated string warnings = 7;
+  Fare fare = 8;
+}
+
+message LatLngBounds {
+  LatLng north_east = 1;
+  LatLng south_west = 2;
+}
+
+message LatLng {
+  float lat = 1;
+  float lng = 2;
+}
+
+message Polyline {
+  string Points = 1;
+}
+
+message Fare {
+  string currency = 1;
+  float value = 2;
+  string text = 3;
+}
+
+message Leg {
+  repeated Step steps = 1;
+  Distance distance = 2;
+  int64 duration = 3; // duration in seconds
+  int64 duraction_in_traffic = 4; // duration in seconds
+  int64 arrival_time = 5; // timestamp in seconds
+  int64 departure_time = 6; // timestamp in seconds
+  LatLng start_location = 7;
+  LatLng end_location = 8;
+  string start_address = 9;
+  string end_address = 10;
+}
+
+message Distance {
+  string human_readable = 1;
+  int64 meters = 2;
+}
+
+message Step {
+  string html_instructions = 1;
+  Distance distance = 2;
+  int64 duration = 3;
+  LatLng start_location = 4;
+  LatLng end_location = 5;
+  Polyline polyline = 6;
+  repeated Step steps = 7;
+  TransitDetails transit_details = 8;
+  string travel_mode = 9;
+}
