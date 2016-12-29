@@ -24,22 +24,30 @@ func (s *Service) Directions(ctx context.Context, in *gmapspb.DirectionsRequest)
 	}
 
 	var req googlemap.DirectionsRequest
-	err = json.Unmarshal(inJson, &req)
-	if err != nil {
+	if err = json.Unmarshal(inJson, &req); err != nil {
 		return nil, err
 	}
 
-	resp, _, err := s.gm.Directions(ctx, &req)
-	if err != nil {
-		return nil, err
-	}
-
-	outJson, err := json.Marshal(resp)
+	routes, geocodedWaypoint, err := s.gm.Directions(ctx, &req)
 	if err != nil {
 		return nil, err
 	}
 
 	var rep gmapspb.DirectionsResponse
-	err = json.Unmarshal(outJson, &rep)
-	return &rep, err
+	outJson, err := json.Marshal(routes)
+	if err != nil {
+		return nil, err
+	}
+	if err = json.Unmarshal(outJson, &rep.Routes); err != nil {
+		return nil, err
+	}
+	outJson, err = json.Marshal(geocodedWaypoint)
+	if err != nil {
+		return nil, err
+	}
+	if err = json.Unmarshal(outJson, &rep.GeocodedWaypoint); err != nil {
+		return nil, err
+	}
+
+	return &rep, nil
 }
