@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/handlers"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	googlemap "googlemaps.github.io/maps"
 
 	"github.com/moul/gmaps-uservice/gen/endpoints"
 	"github.com/moul/gmaps-uservice/gen/pb"
@@ -32,8 +33,17 @@ func main() {
 		logger = log.NewContext(logger).With("caller", log.DefaultCaller)
 	}
 
+	var gm *googlemap.Client
 	{
-		svc := gmapssvc.New()
+		var err error
+		gm, err = googlemap.NewClient(googlemap.WithAPIKey(os.Getenv("GMAPS_API_KEY")))
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	{
+		svc := gmapssvc.New(gm)
 		endpoints := gmaps_endpoints.MakeEndpoints(svc)
 		srv := gmaps_grpctransport.MakeGRPCServer(ctx, endpoints)
 		gmapspb.RegisterGmapsServiceServer(s, srv)
