@@ -44,7 +44,7 @@ message TransitDetails {
   int64 arrival_time = 3;
   int64 departure_time = 4;
   string headsign = 5;
-  int64 headway = 6; // duration in seconds
+  Duration headway = 6;
   uint32 num_stop = 7;
   TransitLine line = 8;
 }
@@ -111,7 +111,7 @@ message Fare {
 message Leg {
   repeated Step steps = 1;
   Distance distance = 2;
-  int64 duration = 3; // duration in seconds
+  Duration duration = 3;
   int64 duraction_in_traffic = 4; // duration in seconds
   int64 arrival_time = 5; // timestamp in seconds
   int64 departure_time = 6; // timestamp in seconds
@@ -129,11 +129,16 @@ message Distance {
 message Step {
   string html_instructions = 1;
   Distance distance = 2;
-  int64 duration = 3;
+  Duration duration = 3;
   LatLng start_location = 4;
   LatLng end_location = 5;
   Polyline polyline = 6;
   repeated Step steps = 7;
   TransitDetails transit_details = 8;
   string travel_mode = 9;
+}
+
+message Duration {
+  int64 sec = 1;
+  int32 nsec = 2;
 }
