@@ -25,11 +25,21 @@ func MakeGRPCServer(ctx context.Context, endpoints endpoints.Endpoints) pb.Gmaps
 			encodeDirectionsResponse,
 			options...,
 		),
+
+		geocode: grpctransport.NewServer(
+			ctx,
+			endpoints.GeocodeEndpoint,
+			decodeRequest,
+			encodeGeocodeResponse,
+			options...,
+		),
 	}
 }
 
 type grpcServer struct {
 	directions grpctransport.Handler
+
+	geocode grpctransport.Handler
 }
 
 func (s *grpcServer) Directions(ctx context.Context, req *pb.DirectionsRequest) (*pb.DirectionsResponse, error) {
@@ -42,6 +52,19 @@ func (s *grpcServer) Directions(ctx context.Context, req *pb.DirectionsRequest) 
 
 func encodeDirectionsResponse(ctx context.Context, response interface{}) (interface{}, error) {
 	resp := response.(*pb.DirectionsResponse)
+	return resp, nil
+}
+
+func (s *grpcServer) Geocode(ctx context.Context, req *pb.GeocodeRequest) (*pb.GeocodeResponse, error) {
+	_, rep, err := s.geocode.ServeGRPC(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return rep.(*pb.GeocodeResponse), nil
+}
+
+func encodeGeocodeResponse(ctx context.Context, response interface{}) (interface{}, error) {
+	resp := response.(*pb.GeocodeResponse)
 	return resp, nil
 }
 

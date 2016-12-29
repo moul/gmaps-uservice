@@ -2,6 +2,7 @@ package gmapssvc
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"golang.org/x/net/context"
 	googlemap "googlemaps.github.io/maps"
@@ -46,6 +47,36 @@ func (s *Service) Directions(ctx context.Context, in *gmapspb.DirectionsRequest)
 		return nil, err
 	}
 	if err = json.Unmarshal(outJson, &rep.GeocodedWaypoint); err != nil {
+		return nil, err
+	}
+
+	return &rep, nil
+}
+
+func (s *Service) Geocode(ctx context.Context, in *gmapspb.GeocodeRequest) (*gmapspb.GeocodeResponse, error) {
+	inJson, err := json.Marshal(in)
+	if err != nil {
+		return nil, err
+	}
+
+	var req googlemap.GeocodingRequest
+	if err = json.Unmarshal(inJson, &req); err != nil {
+		return nil, err
+	}
+
+	fmt.Println(string(inJson))
+
+	results, err := s.gm.Geocode(ctx, &req)
+	if err != nil {
+		return nil, err
+	}
+
+	var rep gmapspb.GeocodeResponse
+	outJson, err := json.Marshal(results)
+	if err != nil {
+		return nil, err
+	}
+	if err = json.Unmarshal(outJson, &rep.Results); err != nil {
 		return nil, err
 	}
 

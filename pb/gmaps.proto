@@ -6,6 +6,7 @@ option go_package = "gmapspb";
 
 service GmapsService {
   rpc Directions(DirectionsRequest) returns (DirectionsResponse) {}
+  rpc Geocode(GeocodeRequest) returns (GeocodeResponse) {}
 }
 
 message DirectionsRequest {
@@ -29,6 +30,45 @@ message DirectionsResponse {
   repeated Route routes = 1;
   repeated GeocodedWaypoint geocoded_waypoint = 2;
   string err_msg = 3;
+}
+
+message GeocodeRequest {
+  string address = 1;
+  map<string, string> components = 2;
+  LatLngBounds bounds = 3;
+  string region = 4;
+  LatLng lat_lng = 5;
+  repeated string result_type = 6;
+  repeated string location_type = 7;
+  string place_id = 8;
+  string language = 9;
+  //url.Values custom = 10;
+}
+
+message GeocodeResponse {
+  repeated GeocodingResult results = 1;
+  string err_msg = 2;
+}
+
+message GeocodingResult {
+  repeated AddressComponent address_components = 1;
+  string formatted_address = 2;
+  AddressGeometry geometry = 3;
+  repeated string types = 4;
+  string place_id = 5;
+}
+
+message AddressComponent {
+  string long_name = 1;
+  string short_name = 2;
+  repeated string types = 3;
+}
+
+message AddressGeometry {
+  LatLng location = 1;
+  string location_type = 2;
+  LatLngBounds viewport = 3;
+  repeated string types = 4;
 }
 
 message GeocodedWaypoint {
@@ -94,8 +134,8 @@ message LatLngBounds {
 }
 
 message LatLng {
-  float lat = 1;
-  float lng = 2;
+  double lat = 1;
+  double lng = 2;
 }
 
 message Polyline {
@@ -104,7 +144,7 @@ message Polyline {
 
 message Fare {
   string currency = 1;
-  float value = 2;
+  double value = 2;
   string text = 3;
 }
 

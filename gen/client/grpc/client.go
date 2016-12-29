@@ -27,9 +27,24 @@ func New(conn *grpc.ClientConn, logger log.Logger) pb.GmapsServiceServer {
 		).Endpoint()
 	}
 
+	var geocodeEndpoint endpoint.Endpoint
+	{
+		geocodeEndpoint = grpctransport.NewClient(
+			conn,
+			"gmaps.GmapsService",
+			"Geocode",
+			EncodeGeocodeRequest,
+			DecodeGeocodeResponse,
+			pb.GeocodeResponse{},
+			append([]grpctransport.ClientOption{}, grpctransport.ClientBefore(jwt.FromGRPCContext()))...,
+		).Endpoint()
+	}
+
 	return &endpoints.Endpoints{
 
 		DirectionsEndpoint: directionsEndpoint,
+
+		GeocodeEndpoint: geocodeEndpoint,
 	}
 }
 
@@ -40,5 +55,15 @@ func EncodeDirectionsRequest(_ context.Context, request interface{}) (interface{
 
 func DecodeDirectionsResponse(_ context.Context, grpcResponse interface{}) (interface{}, error) {
 	response := grpcResponse.(*pb.DirectionsResponse)
+	return response, nil
+}
+
+func EncodeGeocodeRequest(_ context.Context, request interface{}) (interface{}, error) {
+	req := request.(*pb.GeocodeRequest)
+	return req, nil
+}
+
+func DecodeGeocodeResponse(_ context.Context, grpcResponse interface{}) (interface{}, error) {
+	response := grpcResponse.(*pb.GeocodeResponse)
 	return response, nil
 }
