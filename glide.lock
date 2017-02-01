@@ -1,8 +1,8 @@
 hash: d6e7bc622a1badb7eee57e80e9e161e4b4ca115170ed7cd0d0df783f1f987c1e
-updated: 2016-12-29T01:00:57.570103239+01:00
+updated: 2017-02-01T20:26:45.874381216+01:00
 imports:
 - name: github.com/dgrijalva/jwt-go
-  version: 9ed569b5d1ac936e6494082958d63a6aa4fff99a
+  version: e0b2941cad19a847fc16d4f32273498d41a84038
 - name: github.com/go-kit/kit
   version: f66b0e13579bfc5a48b9e2a94b1209c107ea1f41
   subpackages:
@@ -24,15 +24,15 @@ imports:
   subpackages:
   - proto
 - name: github.com/gorilla/handlers
-  version: ee54c7b44cab12289237fb8631314790076e728b
+  version: 3a5767ca75ece5f7f1440b1d16975247f8d8b221
 - name: github.com/kr/logfmt
   version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
 - name: github.com/moul/protoc-gen-gotemplate
-  version: 7e6c4a940120853450f76b7ec69bda0db83fa3ea
+  version: 6cbc8f35ebddcc457d4b788e40aec53fa3e5389e
   subpackages:
   - examples/go-kit/templates
 - name: golang.org/x/net
-  version: 45e771701b814666a7eb299e6c7a57d0b1799e91
+  version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
   subpackages:
   - context
   - context/ctxhttp
@@ -55,4 +55,8 @@ imports:
   - stats
   - tap
   - transport
+- name: googlemaps.github.io/maps
+  version: 61ce2cef47693eb7afabab2ae77fd218f928a0c4
+  subpackages:
+  - internal
 testImports: []

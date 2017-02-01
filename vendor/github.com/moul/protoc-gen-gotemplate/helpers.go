@@ -44,11 +44,18 @@ var ProtoHelpersFuncMap = template.FuncMap{
 		return strings.ToLower(s[:1]) + s[1:]
 	},
 	"camelCase": func(s string) string {
-		return xstrings.ToCamelCase(s)
+		if len(s) > 1 {
+			return xstrings.ToCamelCase(s)
+		}
+
+		return strings.ToUpper(s[:1])
 	},
 	"lowerCamelCase": func(s string) string {
-		cc := xstrings.ToCamelCase(s)
-		return strings.ToLower(cc[:1]) + cc[1:]
+		if len(s) > 1 {
+			s = xstrings.ToCamelCase(s)
+		}
+
+		return strings.ToLower(s[:1]) + s[1:]
 	},
 	"snakeCase": func(s string) string {
 		return xstrings.ToSnakeCase(s)
@@ -60,8 +67,10 @@ var ProtoHelpersFuncMap = template.FuncMap{
 	"isFieldMessage":  isFieldMessage,
 	"isFieldRepeated": isFieldRepeated,
 	"goType":          goType,
+	"jsType":          jsType,
 	"httpVerb":        httpVerb,
 	"httpPath":        httpPath,
+	"shortType":       shortType,
 }
 
 func init() {
@@ -71,9 +80,12 @@ func init() {
 }
 
 func getMessageType(f *descriptor.FileDescriptorProto, name string) *descriptor.DescriptorProto {
+	// name is in the form .packageName.MessageTypeName.InnerMessageTypeName...
+	// e.g. .article.ProductTag
+	splits := strings.Split(name, ".")
+	target := splits[len(splits)-1]
 	for _, m := range f.MessageType {
-		// name usually contains the package name
-		if strings.HasSuffix(name, *m.Name) {
+		if target == *m.Name {
 			return m
 		}
 	}
@@ -82,8 +94,7 @@ func getMessageType(f *descriptor.FileDescriptorProto, name string) *descriptor.
 }
 
 func isFieldMessage(f *descriptor.FieldDescriptorProto) bool {
-	if f.Type != nil && *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE &&
-		f.Label != nil && *f.Label != descriptor.FieldDescriptorProto_LABEL_REPEATED {
+	if f.Type != nil && *f.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
 		return true
 	}
 
@@ -127,6 +138,41 @@ func goType(pkg string, f *descriptor.FieldDescriptorProto) string {
 		return fmt.Sprintf("*%s.%s", pkg, shortType(*f.TypeName))
 	default:
 		return "interface{}"
+	}
+}
+
+func jsType(f *descriptor.FieldDescriptorProto) string {
+	template := "%s"
+	if isFieldRepeated(f) == true {
+		template = "Array<%s>"
+	}
+
+	switch *f.Type {
+	case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+		return fmt.Sprintf(template, shortType(*f.TypeName))
+	case descriptor.FieldDescriptorProto_TYPE_DOUBLE,
+		descriptor.FieldDescriptorProto_TYPE_FLOAT,
+		descriptor.FieldDescriptorProto_TYPE_INT64,
+		descriptor.FieldDescriptorProto_TYPE_UINT64,
+		descriptor.FieldDescriptorProto_TYPE_INT32,
+		descriptor.FieldDescriptorProto_TYPE_FIXED64,
+		descriptor.FieldDescriptorProto_TYPE_FIXED32,
+		descriptor.FieldDescriptorProto_TYPE_UINT32,
+		descriptor.FieldDescriptorProto_TYPE_SFIXED32,
+		descriptor.FieldDescriptorProto_TYPE_SFIXED64,
+		descriptor.FieldDescriptorProto_TYPE_SINT32,
+		descriptor.FieldDescriptorProto_TYPE_SINT64:
+		return fmt.Sprintf(template, "number")
+	case descriptor.FieldDescriptorProto_TYPE_BOOL:
+		return fmt.Sprintf(template, "boolean")
+	case descriptor.FieldDescriptorProto_TYPE_BYTES:
+		return fmt.Sprintf(template, "Array<number>")
+	case descriptor.FieldDescriptorProto_TYPE_STRING:
+		return fmt.Sprintf(template, "string")
+	case descriptor.FieldDescriptorProto_TYPE_ENUM:
+		return fmt.Sprintf(template, "Object")
+	default:
+		return fmt.Sprintf(template, "any")
 	}
 }
 
