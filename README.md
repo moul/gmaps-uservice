@@ -1,4 +1,7 @@
 # gmaps
+
+[![GuardRails badge](https://badges.production.guardrails.io/moul/gmaps-uservice.svg)](https://www.guardrails.io)
+
 :gift: googlemaps micro-service (gRPC + http)
 
 ## Usage
